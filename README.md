@@ -32,10 +32,12 @@ Microservie for activity management in the BIBBOX framework.  First an activity 
 
 ### GET /activities
 `GET http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities`
+
 URL Parameter | Default | Description
 --------- | ------- | -----------
 include_finished | false | If set to true, the result will also include finised activities
 user_id  |   | If user_id is set, only activities started by the user are shown
+
 ```json
 [
   {
