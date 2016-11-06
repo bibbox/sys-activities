@@ -1,9 +1,11 @@
 # SYS-ACTIVITIES SERVICE
-Microservie for activity management in the BIBBOX framework.  First an activity logbook is impelemented. 
+Microservice for activity management in the BIBBOX framework. First an activity logbook is impelemented. 
+
 ## Docker Images Used
- * [phyton server running flask]
- * [redis]
+ * phyton server running flask
+ * [redis](https://hub.docker.com/_/redis/), offical redis container
  * [busybox](https://hub.docker.com/_/busybox/), offical data container
+
 ## INSTALL
 #### run install.sh 
 
@@ -11,13 +13,15 @@ Microservie for activity management in the BIBBOX framework.  First an activity 
 * the phyton APP folder _/app/activities_  will be mounted to _/yourlocalpath/sys-activities/app/activities_
 * the redis datafolder _/var/lib/redis/data_  will be mounted to _/yourlocalpath/sys-activities/redis/data_ 
 
-
 ## APIs
-### Activity JSON data structure
+
+### POST /activities
+`POST http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities`
+
+Generate an activity
 
 ```json
   {
-    "id": 1,
     "name": "Name of the activity, specified by the owner of the task",
     "type": "INSTALLAPP | UPDATEAPP | DELETEAPP | BACKUPAPP",
     "user_id": 8776,
@@ -67,14 +71,62 @@ offset   |   | skip the first _offset_ entries
   }
 ]
 ```
-### POST /activities
-`POST http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities`
 
 ### GET /activities/[id]
 `GET http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities/[id]`
 
+Get a specific activity. 
+
 ### PUT /activities/[id]
 `PUT http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities/[id]`
 
+Update some fields in an activity. 
+
+####  Body payload in JSON FORMAT
+```json
+  {
+    "finished_time":  "2016-04-22T18:29:43.511Z",
+    "state" : "FINISHED",
+    "result" : "ERROR"
+  }
+```
 ### DELETE /activities/[id]
 `DELETE http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities/[id]`
+
+Delete a specific activity, only used in development and debugging. 
+
+
+### POST /activities/[id]/logs
+`POST http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities/[id]/logs`
+
+Generate a log entry for the activiy
+
+```json
+  {
+    "log-message": "Log Meassage, usaly a multiline string",
+    "type" : "INFO | WARNING | ERROR "
+  }
+```
+
+## GET /activities/[id]/logs
+`GET http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities/[id]/logs`
+
+```json
+[
+  {
+    "id": 1,
+    "log-message": "Start Installation",
+    "type" : "INFO"
+  },
+  {
+    "id": 2,
+    "log-message": "Unknown Critical Problem",
+    "type" : "ERROR"
+  }
+]
+```
+
+URL Parameter | Default | Description
+--------- | ------- | -----------
+limit    |   | return a maximum of _limit_ entries
+offset   |   | skip the first _offset_ entries
