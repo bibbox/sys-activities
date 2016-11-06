@@ -15,7 +15,7 @@ services:
             
     redis:
         image: 'redis:3.0-alpine'
-        command: redis-server --requirepass devpassword
+        command: redis-server  --appendonly yes --requirepass devpassword 
         depends_on:
             - datacontainer
         volumes_from: 
@@ -28,4 +28,4 @@ services:
         container_name: datacontainer
         volumes:
             - /Users/mue/dockerdata/sys-activities/app/activities:/app/activities            
-            - /Users/mue/dockerdata/sys-activities/redis/data:/var/lib/redis/data
+            - /Users/mue/dockerdata/sys-activities/redis/data:/data
