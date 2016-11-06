@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Resource, Api, fields, marshal, reqparse
-from activities.common import datastore
+from common import datastore
 
 class ActivityAPI(Resource):
 #    decorators = [auth.login_required]

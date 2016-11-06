@@ -1,10 +1,10 @@
 from flask import Flask
 from flask_restful import Resource, Api, fields, marshal, reqparse
 from flask_httpauth import HTTPBasicAuth
-from activities.common import datastore
+from common import datastore
 
-from activities.resources.activity import ActivityAPI
-from activities.resources.activity_list import ActivityListAPI
+from resources.activity import ActivityAPI
+from resources.activity_list import ActivityListAPI
 
 print "APP STARTED"
 

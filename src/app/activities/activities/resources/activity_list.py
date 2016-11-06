@@ -1,7 +1,7 @@
 import json
 from flask import Flask, jsonify
 from flask_restful import Resource, Api, fields, marshal, reqparse, request
-from activities.common import datastore
+from common import datastore
 
 class ActivityListAPI(Resource):
 #    decorators = [auth.login_required]
@@ -25,8 +25,14 @@ class ActivityListAPI(Resource):
         return json.loads(allInOneString), 200
 
     def post(self):
-        json_data = request.get_json(force=True)
+
         redis = datastore.get_datastore()
-        redis.lpush('activities', json.dumps(json_data) )
-        return json_data, 201
+        # get a dicht from the response
+        responcse_as_dict = request.get_json(force=True)
+        idcounter = {}
+        idcounter['id'] = redis.llen('activities')
+        activity = dict(responcse_as_dict, **idcounter)
+        print activity
+        redis.lpush('activities', json.dumps(activity) )
+        return activity, 201
 
