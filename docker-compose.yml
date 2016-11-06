@@ -28,4 +28,4 @@ services:
         container_name: datacontainer
         volumes:
             - /Users/mue/dockerdata/sys-activities/app/activities:/app/activities            
-            - /Users/mue/dockerdata/sys-activities/redis/data:/var/lib/redis/data'
+            - /Users/mue/dockerdata/sys-activities/redis/data:/var/lib/redis/data
