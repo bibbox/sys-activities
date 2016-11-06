@@ -1,0 +1,31 @@
+version: '2'
+services:
+
+    website:
+        build: 
+            context: ./images/webserver
+        environment:
+                PYTHONUNBUFFERED: 'true'
+        depends_on:
+            - datacontainer
+        volumes_from: 
+            - datacontainer
+        ports:
+            - '8000:8000'
+            
+    redis:
+        image: 'redis:3.0-alpine'
+        command: redis-server --requirepass devpassword
+        depends_on:
+            - datacontainer
+        volumes_from: 
+            - datacontainer
+        ports:
+            - '6379:6379'
+
+    datacontainer:
+        image: busybox
+        container_name: datacontainer
+        volumes:
+            - /Users/mue/dockerdata/sys-activities/app/activities:/app/activities            
+            - /Users/mue/dockerdata/sys-activities/redis/data:/var/lib/redis/data'
