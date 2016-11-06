@@ -23,7 +23,7 @@ Microservie for activity management in the BIBBOX framework.  First an activity 
     "user_id": 8776,
     "user_name": "Name of the user issued the task / job", 
     "start_time" : "start time in javascript format",  
-    "finished_time":  "finisched time in javascript format, empty string when still running",
+    "finished_time":  "finished time in javascript format, empty string when still running",
     "state" : "RUNNING | FINISHED | PAUSED",
     "result" : "SUCCESS | ERROR | UNKNOWN"
   }
@@ -35,10 +35,10 @@ Microservie for activity management in the BIBBOX framework.  First an activity 
 
 URL Parameter | Default | Description
 --------- | ------- | -----------
-include_finished | false | If set to true, the result will also include finished activities
+finished | false | If set to true, the result will also include finished activities
 user_id  |   | If user_id is set, only activities started by the user are shown
-limit |   | return a maximum of _limit_ entries
-offset |   | skip the first _offset_ entries
+limit    |   | return a maximum of _limit_ entries
+offset   |   | skip the first _offset_ entries
 
 
 ```json
