@@ -1,6 +1,6 @@
 # SYS-ACTIVITIES SERVICE
 
-Microservie for activity management in the BIBBOX framework. At first a activity logbook is impelemented. 
+Microservie for activity management in the BIBBOX framework.  First an activity logbook is impelemented. 
 
 ## Docker Images Used
  * [phyton server running flask]
@@ -12,19 +12,18 @@ Microservie for activity management in the BIBBOX framework. At first a activity
 
 ## Mounted Volumes
 
-* the phyton APP folder _/app/activities_  mounted to _/yourlocalpath/sys-activities/app/activities_
-* the redis datafolder _/var/lib/redis/data:  will be mounted to _/yourlocalpath/sys-activities/redis/data_ 
+* the phyton APP folder _/app/activities_  will be mounted to _/yourlocalpath/sys-activities/app/activities_
+* the redis datafolder _/var/lib/redis/data_  will be mounted to _/yourlocalpath/sys-activities/redis/data_ 
 
 
-## APIS
+## APIs
 
-### GET/activities
+### GET activities
 
 `GET http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities`
 
-### Query Parameters
 
-Parameter | Default | Description
+URL Parameter | Default | Description
 --------- | ------- | -----------
 include_finished | false | If set to true, the result will also include finised activities
 user_id  |   | If user_id is set, only activities started by the user are shown
