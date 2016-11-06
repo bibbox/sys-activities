@@ -35,8 +35,9 @@ Microservie for activity management in the BIBBOX framework.  First an activity 
 
 URL Parameter | Default | Description
 --------- | ------- | -----------
-include_finished | false | If set to true, the result will also include finised activities
+include_finished | false | If set to true, the result will also include finished activities
 user_id  |   | If user_id is set, only activities started by the user are shown
+
 
 ```json
 [
