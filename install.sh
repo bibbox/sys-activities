@@ -40,7 +40,11 @@ error_exit()
 createFolders()
 {
     mkdir -p "$folder/sys/sys-activities/app/activities"
-    mkdir -p "$folder/sys/sys--activities/redis/data
+    mkdir -p "$folder/sys/sys-activities/redis/data"
+    mkdir -p "$folder/sys/sys-activities/orientdb"
+    mkdir -p "$folder/sys/sys-activities/orientdb/config"
+    
+
 }
 
 copyInitFiles()
@@ -48,6 +52,9 @@ copyInitFiles()
     if [[ ! -d  $folder/sys/sys-activities/app/activities/app ]]; then
         cp src/app   $folder/sys/sys-activities/app/activities
     fi
+    
+    COPY orientDB confif "$folder/sys/sys-activities/orientdb/config"
+    
 }
 
 checkParameters() 

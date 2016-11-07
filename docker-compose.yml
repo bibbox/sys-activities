@@ -5,7 +5,7 @@ services:
         build: 
             context: ./images/webserver
         environment:
-                PYTHONUNBUFFERED: 'true'
+            PYTHONUNBUFFERED: 'true'
         depends_on:
             - datacontainer
         volumes_from: 
@@ -23,9 +23,26 @@ services:
         ports:
             - '6379:6379'
 
+    orientdb:
+        image: 'orientdb'
+        command: /orientdb/bin/server.sh  -Ddistributed=true
+        environment:
+                ORIENTDB_ROOT_PASSWORD: 'fenris'
+                ORIENTDB_NODE_NAME: 'node1'
+        depends_on:
+            - datacontainer
+        volumes_from: 
+            - datacontainer
+        ports:
+            - '2424:2424' 
+            - '2480:2480' 
+
     datacontainer:
         image: busybox
         container_name: datacontainer
         volumes:
             - /Users/mue/dockerdata/sys-activities/app/activities:/app/activities            
             - /Users/mue/dockerdata/sys-activities/redis/data:/data
+            - /Users/mue/dockerdata/sys-activities/orientdb/config:/orientdb/config
+            - /Users/mue/dockerdata/sys-activities/orientdb/databases:/orientdb/databases 
+            - /Users/mue/dockerdata/sys-activities/orientdb/backup:/orientdb/backup 
