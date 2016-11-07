@@ -39,10 +39,9 @@ Generate an activity
 
 URL Parameter | Default | Description
 --------- | ------- | -----------
-finished | false | If set to true, the result will also include finished activities
-user_id  |   | If user_id is set, only activities started by the user are shown
-limit    |   | return a maximum of _limit_ entries
-offset   |   | skip the first _offset_ entries
+finished | false    | If set to true, the result will also include finished activities
+limit    |          | return a maximum of _limit_ entries
+offset   |          | skip the first _offset_ entries
 
 
 ```json
