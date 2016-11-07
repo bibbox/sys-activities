@@ -1,3 +1,4 @@
+import pickle
 import json
 from flask import Flask, jsonify
 from flask_restful import Resource, Api, fields, marshal, reqparse, request
@@ -12,8 +13,43 @@ class ActivityListAPI(Resource):
 
     def get(self):
         redis = datastore.get_datastore()
-        activitiesFromRedis = redis.lrange('activities', 0, -1)
 
+        activitiesFromRedisDict = redis.hgetall('activitieshash')
+
+        print activitiesFromRedisDict
+
+        allActivities = []
+        for k, v in activitiesFromRedisDict.items():
+            activity =  pickle.loads(v)
+            print k
+            allActivities.append(activity)
+
+        print json.dumps(allActivities)
+        jsonString = json.dumps(allActivities)
+
+        resultset = {"count": redis.hlen('activitieshash'), "offset":0, "limit" :-1}
+
+        fullresponse = {"metadata" :resultset, "content" : allActivities}
+        return fullresponse, 200
+
+
+    def post(self):
+        redis = datastore.get_datastore()
+
+        # get a dict from the response
+        activity = request.get_json(force=True)
+        activity['id'] = redis.llen('activities-dict')
+        redis.lpush('activities-dict', pickle.dumps(activity) )
+        akey = "activity:" + str( redis.llen('activities-dict'))
+        redis.hset ('activitieshash', akey, pickle.dumps(activity))
+        return activity, 201
+
+
+
+
+'''
+CODEFRIEHOF
+  activitiesFromRedis = redis.lrange('activities', 0, -1)
         allInOneString = "["
         c = 0;
         l = len (activitiesFromRedis)
@@ -24,15 +60,7 @@ class ActivityListAPI(Resource):
         allInOneString += "]"
         return json.loads(allInOneString), 200
 
-    def post(self):
+     redis.lpush('activities', json.dumps(activity) )
 
-        redis = datastore.get_datastore()
-        # get a dicht from the response
-        responcse_as_dict = request.get_json(force=True)
-        idcounter = {}
-        idcounter['id'] = redis.llen('activities')
-        activity = dict(responcse_as_dict, **idcounter)
-        print activity
-        redis.lpush('activities', json.dumps(activity) )
-        return activity, 201
 
+'''
