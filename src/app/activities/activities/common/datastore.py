@@ -24,7 +24,7 @@ def _datastore_connect():
             return redis.StrictRedis(host='127.0.0.1', port=6379, db=0, password="devpassword")
         else:
             print "RUNNING IN DOCKER"
-            return redis.StrictRedis(host='instancetaskmanager_redis_1', port=6379, db=0, password="devpassword")
+            return redis.StrictRedis(host='sys-activities-redis', port=6379, db=0, password="devpassword")
     except:
         print "No connection to redis"
         pass
