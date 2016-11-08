@@ -9,25 +9,34 @@ class ActivityListAPI(Resource):
 
     def __init__(self):
         super(ActivityListAPI, self).__init__()
-        redis = datastore.get_datastore()
+
 
     def get(self):
         redis = datastore.get_datastore()
 
-        activitiesFromRedisDict = redis.hgetall('activitieshash')
 
-        print activitiesFromRedisDict
+        print request.url
+
+        finished = request.args.get('finished')
+        offset = request.args.get('offset')
+        limit = request.args.get('limit')
+
+        # TODO implement offset and limit using ZSCAN
+
+        if (finished == 'true'):
+            actKeys = redis.zrevrange ('sortet-activities:finished', 0, -1)
+        else:
+            actKeys = redis.zrevrange ('sortet-activities:all', 0, -1)
 
         allActivities = []
-        for k, v in activitiesFromRedisDict.items():
-            activity =  pickle.loads(v)
-            print k
+        for k in actKeys:
+            activity = pickle.loads( redis.hget ('activitieshash', k))
             allActivities.append(activity)
 
         print json.dumps(allActivities)
         jsonString = json.dumps(allActivities)
 
-        resultset = {"count": redis.hlen('activitieshash'), "offset":0, "limit" :-1}
+        resultset = {"count": len(actKeys), "offset":0, "limit" :-1}
 
         fullresponse = {"metadata" :resultset, "content" : allActivities}
         return fullresponse, 200
@@ -38,29 +47,20 @@ class ActivityListAPI(Resource):
 
         # get a dict from the response
         activity = request.get_json(force=True)
-        activity['id'] = redis.llen('activities-dict')
+        aid = int (redis.llen('activities-dict'))
+        print aid
+        activity['id'] = aid
         redis.lpush('activities-dict', pickle.dumps(activity) )
+
         akey = "activity:" + str( redis.llen('activities-dict'))
         redis.hset ('activitieshash', akey, pickle.dumps(activity))
+
+        redis.zadd ('sortet-activities:all', aid, akey)
+        if (activity['state'] == "FINISHED"):
+             redis.zadd ('sortet-activities:finished', aid, akey)
+        else:
+             redis.zadd ('sortet-activities:notfinished', aid, akey)
+
+        redis.hset ('activitieshash', akey, pickle.dumps(activity))
+
         return activity, 201
-
-
-
-
-'''
-CODEFRIEHOF
-  activitiesFromRedis = redis.lrange('activities', 0, -1)
-        allInOneString = "["
-        c = 0;
-        l = len (activitiesFromRedis)
-        for a in activitiesFromRedis:
-            allInOneString += a
-            if (c<l-1): allInOneString += ","
-            c += 1
-        allInOneString += "]"
-        return json.loads(allInOneString), 200
-
-     redis.lpush('activities', json.dumps(activity) )
-
-
-'''
