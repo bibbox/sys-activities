@@ -1,48 +1,51 @@
 version: '2'
 services:
 
-    website:
+    sys-activities-website:
         build: 
             context: ./images/webserver
         environment:
             PYTHONUNBUFFERED: 'true'
+        container_name: sys-activities-api
         depends_on:
-            - datacontainer
+            - sys-activities-datacontainer
         volumes_from: 
-            - datacontainer
+            - sys-activities-datacontainer
         ports:
-            - '8000:8000'
+            - '8050:8000'
             
-    redis:
+    sys-activities-redis:
         image: 'redis:3.0-alpine'
         command: redis-server  --appendonly yes --requirepass devpassword 
+        container_name: sys-activities-redis
         depends_on:
-            - datacontainer
+            - sys-activities-datacontainer
         volumes_from: 
-            - datacontainer
+            - sys-activities-datacontainer
         ports:
             - '6379:6379'
 
-    orientdb:
+    sys-activities-orientdb:
         image: 'orientdb'
         command: /orientdb/bin/server.sh  -Ddistributed=true
+        container_name: sys-activities-orientdb
         environment:
                 ORIENTDB_ROOT_PASSWORD: 'fenris'
                 ORIENTDB_NODE_NAME: 'node1'
         depends_on:
-            - datacontainer
+            - sys-activities-datacontainer
         volumes_from: 
-            - datacontainer
+            - sys-activities-datacontainer
         ports:
             - '2424:2424' 
             - '2480:2480' 
 
-    datacontainer:
+    sys-activities-datacontainer:
         image: busybox
-        container_name: datacontainer
+        container_name: sys-activities-datacontainer
         volumes:
-            - /Users/mue/dockerdata/sys-activities/app/activities:/app/activities            
-            - /Users/mue/dockerdata/sys-activities/redis/data:/data
-            - /Users/mue/dockerdata/sys-activities/orientdb/config:/orientdb/config
-            - /Users/mue/dockerdata/sys-activities/orientdb/databases:/orientdb/databases 
-            - /Users/mue/dockerdata/sys-activities/orientdb/backup:/orientdb/backup 
+            - src/app:/app            
+            - datavolume/redis/data:/data
+            - datavolume/orientdb/config:/orientdb/config
+            - datavolume/orientdb/databases:/orientdb/databases 
+            - datavolume/orientdb/backup:/orientdb/backup 
