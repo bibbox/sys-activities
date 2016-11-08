@@ -44,8 +44,8 @@ services:
         image: busybox
         container_name: sys-activities-datacontainer
         volumes:
-            - src/app:/app            
-            - datavolume/redis/data:/data
-            - datavolume/orientdb/config:/orientdb/config
-            - datavolume/orientdb/databases:/orientdb/databases 
-            - datavolume/orientdb/backup:/orientdb/backup 
+            - ./src/app:/app            
+            - ./datavolume/redis/data:/data
+            - ./datavolume/orientdb/config:/orientdb/config
+            - ./datavolume/orientdb/databases:/orientdb/databases 
+            - ./datavolume/orientdb/backup:/orientdb/backup 
