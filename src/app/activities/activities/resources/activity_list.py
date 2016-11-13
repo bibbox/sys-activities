@@ -1,6 +1,7 @@
 import pickle
 import json
-from flask import Flask, jsonify
+import redis
+from flask import Flask, jsonify, abort
 from flask_restful import Resource, Api, fields, marshal, reqparse, request
 from common import datastore
 
@@ -10,34 +11,31 @@ class ActivityListAPI(Resource):
     def __init__(self):
         super(ActivityListAPI, self).__init__()
 
-
     def get(self):
         redis = datastore.get_datastore()
-
-
-        print request.url
-
         finished = request.args.get('finished')
-        offset = request.args.get('offset')
-        limit = request.args.get('limit')
 
-        # TODO implement offset and limit using ZSCAN
+        start = 0
+        end = -1
+        if 'offset' in request.args:  start = int( request.args.get('offset'))
+        if 'limit' in request.args:   end = start + int(request.args.get('limit')) -1
 
         if (finished == 'true'):
-            actKeys = redis.zrevrange ('sortet-activities:finished', 0, -1)
+            actKeys = redis.zrevrange ('sortet-activities:finished', start, end)
         else:
-            actKeys = redis.zrevrange ('sortet-activities:all', 0, -1)
+            actKeys = redis.zrevrange ('sortet-activities:all', start, end)
 
         allActivities = []
         for k in actKeys:
-            activity = pickle.loads( redis.hget ('activitieshash', k))
-            allActivities.append(activity)
+            activityencoded = redis.hget('activitieshash', k)
+            if activityencoded != None:
+                activity = pickle.loads(activityencoded)
+                activity['url'] = request.url + "/" +   str(activity['id'])
+                allActivities.append(activity)
 
-        print json.dumps(allActivities)
-        jsonString = json.dumps(allActivities)
 
-        resultset = {"count": len(actKeys), "offset":0, "limit" :-1}
-
+        limit = end - start + 1
+        resultset = {"count": len(actKeys), "offset":start, "limit" :limit}
         fullresponse = {"metadata" :resultset, "content" : allActivities}
         return fullresponse, 200
 
@@ -47,20 +45,19 @@ class ActivityListAPI(Resource):
 
         # get a dict from the response
         activity = request.get_json(force=True)
-        aid = int (redis.llen('activities-dict'))
-        print aid
-        activity['id'] = aid
-        redis.lpush('activities-dict', pickle.dumps(activity) )
 
-        akey = "activity:" + str( redis.llen('activities-dict'))
+        position = int(redis.get ('activityindex'))
+        redis.incr ('activityindex', 1)
+        activity['id'] =  str(position)
+
+        akey = "activity:" + str(  activity['id'] )
         redis.hset ('activitieshash', akey, pickle.dumps(activity))
 
-        redis.zadd ('sortet-activities:all', aid, akey)
+        redis.zadd ('sortet-activities:all', position, akey)
         if (activity['state'] == "FINISHED"):
-             redis.zadd ('sortet-activities:finished', aid, akey)
+             redis.zadd ('sortet-activities:finished', position, akey)
         else:
-             redis.zadd ('sortet-activities:notfinished', aid, akey)
-
-        redis.hset ('activitieshash', akey, pickle.dumps(activity))
-
+             redis.zadd ('sortet-activities:notfinished', position, akey)
         return activity, 201
+
+

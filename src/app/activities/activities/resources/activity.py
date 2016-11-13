@@ -1,37 +1,65 @@
-from flask import Flask
-from flask_restful import Resource, Api, fields, marshal, reqparse
+import pickle
+import json
+from flask import Flask, jsonify, abort
+from flask_restful import Resource, Api, fields, marshal, reqparse, request
 from common import datastore
 
 class ActivityAPI(Resource):
 #    decorators = [auth.login_required]
 
     def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('title', type=str, location='json')
-        self.reqparse.add_argument('description', type=str, location='json')
-        self.reqparse.add_argument('done', type=bool, location='json')
         super(ActivityAPI, self).__init__()
 
     def get(self, id):
-        activity = [activity for activity in activities if activity['id'] == id]
+
+        redis = datastore.get_datastore()
+        akey = "activity:" + str(id);
+
+        activity = {}
+        activityencoded = redis.hget ('activitieshash', akey)
+        if activityencoded != None: activity = pickle.loads( activityencoded)
+
         if len(activity) == 0:
             abort(404)
-        return {'activity': marshal(activity[0], activity_fields)}
+
+        return activity, 200
 
     def put(self, id):
-        activity = [activity for activity in activities if activity['id'] == id]
+
+        redis = datastore.get_datastore()
+        akey = "activity:" + str(id);
+        activity = pickle.loads( redis.hget ('activitieshash', akey))
+
+        print (activity)
+        inputvalues = request.get_json(force=True)
+
+        print (inputvalues)
+        for k,v in inputvalues.iteritems():
+            activity[k] = v
+
+
+        akey = "activity:" + str(  activity['id'] )
+        position =  activity['id']
+
+        redis.hset ('activitieshash', akey, pickle.dumps(activity))
+
+        if (activity['state'] == "FINISHED"):
+             redis.zrem ('sortet-activities:notfinished', akey)
+             redis.zadd ('sortet-activities:finished', position, akey)
+        else:
+             redis.zrem ('sortet-activities:finished', akey)
+             redis.zadd ('sortet-activities:notfinished', position, akey)
+
         if len(activity) == 0:
             abort(404)
-        activity = activity[0]
-        args = self.reqparse.parse_args()
-        for k, v in args.items():
-            if v is not None:
-                activity[k] = v
-        return {'activity': marshal(activity, activity_fields)}
+        return activity, 201
 
     def delete(self, id):
-        activity = [activity for activity in activities if activity['id'] == id]
-        if len(activity) == 0:
+         redis = datastore.get_datastore()
+         akey = "activity:" + str(id);
+         l = redis.hdel ('activitieshash', akey)
+         logkey = "activity:" + str(id) + ":logs"
+         ll = redis.lrem(logkey)
+         if l == 0:
             abort(404)
-        activities.remove(activity[0])
-        return {'result': True}
+         return {'result': True}

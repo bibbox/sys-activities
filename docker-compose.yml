@@ -11,17 +11,19 @@ services:
             - sys-activities-datacontainer
         volumes_from: 
             - sys-activities-datacontainer
+        restart: unless-stopped
         ports:
             - '8050:8000'
             
     sys-activities-redis:
         image: 'redis:3.0-alpine'
-        command: redis-server  --appendonly yes --requirepass devpassword 
+        command: redis-server  --appendonly yes --requirepass bibbox4ever 
         container_name: sys-activities-redis
         depends_on:
             - sys-activities-datacontainer
         volumes_from: 
             - sys-activities-datacontainer
+        restart: unless-stopped
         ports:
             - '6379:6379'
 
@@ -36,6 +38,7 @@ services:
             - sys-activities-datacontainer
         volumes_from: 
             - sys-activities-datacontainer
+        restart: unless-stopped
         ports:
             - '2424:2424' 
             - '2480:2480' 
@@ -45,7 +48,7 @@ services:
         container_name: sys-activities-datacontainer
         volumes:
             - ./src/app:/app            
-            - ./datavolume/redis/data:/data
-            - ./datavolume/orientdb/config:/orientdb/config
-            - ./datavolume/orientdb/databases:/orientdb/databases 
-            - ./datavolume/orientdb/backup:/orientdb/backup 
+            - ./data/redis/data:/data
+            - ./data/orientdb/config:/orientdb/config
+            - ./data/orientdb/databases:/orientdb/databases 
+            - ./data/orientdb/backup:/orientdb/backup 
