@@ -113,12 +113,10 @@ Generate a log entry for the activiy
 ```json
 [
   {
-    "id": 1,
     "log-message": "Start Installation",
     "type" : "INFO"
   },
   {
-    "id": 2,
     "log-message": "Unknown Critical Problem",
     "type" : "ERROR"
   }
