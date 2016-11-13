@@ -1,7 +1,7 @@
 version: '2'
 services:
 
-    sys-activities-website:
+    sys-activities-api:
         build: 
             context: ./images/webserver
         environment:
@@ -47,7 +47,7 @@ services:
         image: busybox
         container_name: sys-activities-datacontainer
         volumes:
-            - ./src/app:/app            
+            - ./app:/app            
             - ./data/redis/data:/data
             - ./data/orientdb/config:/orientdb/config
             - ./data/orientdb/databases:/orientdb/databases 

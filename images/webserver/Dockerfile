@@ -4,4 +4,4 @@ MAINTAINER  lomadi <lomadi@mac.com>
 ADD . /app
 RUN pip install --upgrade pip
 EXPOSE 8000
-CMD ["/app/activities/run.sh"]
+CMD ["/app/run.sh"]

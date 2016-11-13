@@ -8,9 +8,6 @@ _db_config = None # Holds database config
 def init(app):
     """ Function must be called to initalize this module """
 
-    print("redis version = ", redis.VERSION)
-    redis_db = redis.StrictRedis(host='127.0.0.1', port=6379, db=0, password="bibbox4ever")
-    print("redis keys in db = ",redis_db.keys())
     global _db_config
     global close_connection
 #   _db_config = app.config['DATABASE']
