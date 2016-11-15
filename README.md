@@ -16,7 +16,7 @@ Microservice for activity management in the BIBBOX framework. First an activity 
 ## APIs
 
 ### POST /activities
-`POST http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities`
+`POST http://activities.development.bibbox.org/activities/api/v1.0/activities`
 
 Generate an activity
 
@@ -35,7 +35,7 @@ Generate an activity
 
 
 ### GET /activities
-`GET http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities`
+`GET http://activities.development.bibbox.org/activities/api/v1.0/activities`
 
 URL Parameter | Default | Description
 --------- | ------- | -----------
@@ -72,12 +72,12 @@ offset   |          | skip the first _offset_ entries
 ```
 
 ### GET /activities/[id]
-`GET http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities/[id]`
+`GET http://activities.development.bibbox.org/activities/api/v1.0/activities/[id]`
 
 Get a specific activity. 
 
 ### PUT /activities/[id]
-`PUT http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities/[id]`
+`PUT http://activities.development.bibbox.org/activities/api/v1.0/activities/[id]`
 
 Update some fields in an activity. 
 
@@ -90,13 +90,13 @@ Update some fields in an activity.
   }
 ```
 ### DELETE /activities/[id]
-`DELETE http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities/[id]`
+`DELETE hhttp://activities.development.bibbox.org/activities/api/v1.0/activities/[id]`
 
 Delete a specific activity, only used in development and debugging. 
 
 
 ### POST /activities/[id]/logs
-`POST http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities/[id]/logs`
+`POST http://activities.development.bibbox.org/activities/api/v1.0/activities/[id]/logs`
 
 Generate a log entry for the activiy
 
@@ -108,7 +108,7 @@ Generate a log entry for the activiy
 ```
 
 ## GET /activities/[id]/logs
-`GET http://sys-activities.demo.bibbox.com/activities/api/v1.0/activities/[id]/logs`
+`GET http://activities.development.bibbox.org/activities/api/v1.0/activities/[id]/logs`
 
 ```json
 [
