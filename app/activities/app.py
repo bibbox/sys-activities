@@ -4,6 +4,8 @@ from flask_httpauth import HTTPBasicAuth
 from common import datastore
 from common import graphdatabase
 
+from flask_cors import CORS, cross_origin
+
 from resources.activity import ActivityAPI
 from resources.activity_list import ActivityListAPI
 from resources.log_list import LogListAPI
@@ -12,6 +14,7 @@ from resources.activity_commands import ActiviyListReset
 print ("APP STARTED")
 
 app = Flask(__name__)
+CORS(app)
 datastore.init(app)
 graphdatabase.init(app)
 

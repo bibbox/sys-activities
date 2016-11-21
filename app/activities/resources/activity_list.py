@@ -5,6 +5,7 @@ from flask import Flask, jsonify, abort
 from flask_restful import Resource, Api, fields, marshal, reqparse, request
 from common import datastore
 
+
 class ActivityListAPI(Resource):
 #    decorators = [auth.login_required]
 
@@ -33,9 +34,12 @@ class ActivityListAPI(Resource):
                 activity['url'] = request.url + "/" +   str(activity['id'])
                 allActivities.append(activity)
 
+        cAll = redis.zcount ('sortet-activities:all', '-inf', '+inf')
+        cFinished = redis.zcount ('sortet-activities:finished', '-inf', '+inf')
+        cNotFinished = cAll - cFinished
 
         limit = end - start + 1
-        resultset = {"count": len(actKeys), "offset":start, "limit" :limit}
+        resultset = {"count": len(actKeys), "offset":start, "limit" :limit, "pending":cNotFinished}
         fullresponse = {"metadata" :resultset, "content" : allActivities}
         return fullresponse, 200
 
