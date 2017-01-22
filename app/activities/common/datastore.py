@@ -21,15 +21,20 @@ def _datastore_connect():
     try:
         if 'PYCHARM_HOSTED'  in os.environ.keys():
             redis_db = redis.StrictRedis(host='127.0.0.1', port=6379, db=0, password="bibbox4ever")
-            return redis_db
+
         else:
-            return redis.StrictRedis(host='sys-activities-redis', port=6379, db=0, password="bibbox4ever")
+            redis_db = redis.StrictRedis(host='sys-activities-redis', port=6379, db=0, password="bibbox4ever")
 #
 # not the best solution, but a quick workaround for the init of redis, better do do this in the installation of the DB
 
-        if redis.get('initdone') == None:
-            redis.set('initdone', 'yes')
-            redis.set('activityindex', "0")
+        print("CONNECT TO DATASTORE")
+
+        if redis_db .get('initdone') == None:
+            redis_db.set('initdone', 'yes')
+            redis_db.set('activityindex', "0")
+
+        return redis_db
+
 
     except:
         print ("ERROR cannot conenct to redis")
