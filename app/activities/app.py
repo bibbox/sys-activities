@@ -3,6 +3,7 @@ from flask_restful import Resource, Api, fields, marshal, reqparse
 from flask_httpauth import HTTPBasicAuth
 from common import datastore
 from common import graphdatabase
+import redis
 
 from flask_cors import CORS, cross_origin
 
@@ -15,8 +16,9 @@ print ("APP STARTED")
 
 app = Flask(__name__)
 CORS(app)
+
 datastore.init(app)
-graphdatabase.init(app)
+
 
 api =   Api(app)
 auth = HTTPBasicAuth()

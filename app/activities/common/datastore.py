@@ -24,9 +24,18 @@ def _datastore_connect():
             return redis_db
         else:
             return redis.StrictRedis(host='sys-activities-redis', port=6379, db=0, password="bibbox4ever")
+#
+# not the best solution, but a quick workaround for the init of redis, better do do this in the installation of the DB
+
+        if redis.get('initdone') == None:
+            redis.set('initdone', 'yes')
+            redis.set('activityindex', "0")
+
     except:
         print ("ERROR cannot conenct to redis")
         raise
+
+
 
 def get_datastore():
     datastore  = getattr(g, '_datastore', None)

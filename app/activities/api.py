@@ -6,4 +6,3 @@ app = Flask(__name__, static_url_path="")
 
 datastore.init(app)
 api = Api(app)
-
