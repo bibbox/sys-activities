@@ -21,11 +21,18 @@ class ActivityListAPI(Resource):
         if 'offset' in request.args:  start = int( request.args.get('offset'))
         if 'limit' in request.args:   end = start + int(request.args.get('limit')) -1
 
+
+		cAll = redis.zcount ('sortet-activities:all', '-inf', '+inf')
+        cFinished = redis.zcount ('sortet-activities:finished', '-inf', '+inf')
+        cNotFinished = cAll - cFinished
+
         if (finished == 'true'):
             actKeys = redis.zrevrange ('sortet-activities:finished', start, end)
+			total = cFinished
         else:
             actKeys = redis.zrevrange ('sortet-activities:all', start, end)
-
+			total = cAll
+			
         allActivities = []
         for k in actKeys:
             activityencoded = redis.hget('activitieshash', k)
@@ -34,12 +41,9 @@ class ActivityListAPI(Resource):
                 activity['url'] = request.url + "/" +   str(activity['id'])
                 allActivities.append(activity)
 
-        cAll = redis.zcount ('sortet-activities:all', '-inf', '+inf')
-        cFinished = redis.zcount ('sortet-activities:finished', '-inf', '+inf')
-        cNotFinished = cAll - cFinished
-
+       
         limit = end - start + 1
-        resultset = {"count": len(actKeys), "offset":start, "limit" :limit, "pending":cNotFinished}
+        resultset = {"count": len(actKeys), "total": total, offset":start, "limit" :limit, "pending":cNotFinished}
         fullresponse = {"metadata" :resultset, "content" : allActivities}
         return fullresponse, 200
 
