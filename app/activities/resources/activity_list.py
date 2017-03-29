@@ -43,8 +43,8 @@ class ActivityListAPI(Resource):
 
        
         limit = end - start + 1
-        resultset = {"count": len(actKeys), "total": total, offset":start, "limit" :limit, "pending":cNotFinished}
-        fullresponse = {"metadata" :resultset, "content" : allActivities}
+        resultset = {"count":len(actKeys), "total":total, "offset":start, "limit":limit, "pending":cNotFinished}
+        fullresponse = {"metadata":resultset, "content":allActivities}
         return fullresponse, 200
 
 
