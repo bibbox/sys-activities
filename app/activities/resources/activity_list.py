@@ -22,7 +22,7 @@ class ActivityListAPI(Resource):
         if 'limit' in request.args:   end = start + int(request.args.get('limit')) -1
 
 
-		cAll = redis.zcount ('sortet-activities:all', '-inf', '+inf')
+	cAll = redis.zcount ('sortet-activities:all', '-inf', '+inf')
         cFinished = redis.zcount ('sortet-activities:finished', '-inf', '+inf')
         cNotFinished = cAll - cFinished
 
