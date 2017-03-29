@@ -28,10 +28,10 @@ class ActivityListAPI(Resource):
 
         if (finished == 'true'):
             actKeys = redis.zrevrange ('sortet-activities:finished', start, end)
-			total = cFinished
+            total = cFinished
         else:
             actKeys = redis.zrevrange ('sortet-activities:all', start, end)
-			total = cAll
+            total = cAll
 			
         allActivities = []
         for k in actKeys:
