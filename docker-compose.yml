@@ -28,22 +28,6 @@ services:
         ports:
             - '6379:6379'
 
-    sys-activities-orientdb:
-        image: 'orientdb'
-        command: /orientdb/bin/server.sh  -Ddistributed=true
-        container_name: sys-activities-orientdb
-        environment:
-                ORIENTDB_ROOT_PASSWORD: 'fenris'
-                ORIENTDB_NODE_NAME: 'node1'
-        depends_on:
-            - sys-activities-datacontainer
-        volumes_from: 
-            - sys-activities-datacontainer
-        restart: unless-stopped
-        ports:
-            - '2424:2424' 
-            - '2480:2480' 
-
     sys-activities-datacontainer:
         image: busybox
         container_name: sys-activities-datacontainer
